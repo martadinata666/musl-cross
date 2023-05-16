@@ -1,0 +1,31 @@
+name: Build MUSL cross
+
+on:
+  push:
+    branches: 
+      - "*"
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'     
+        required: true
+        default: 'warning'
+      tags:
+        description: 'Manual run'
+
+jobs:
+  Build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Clone upstream
+        run: git clone --depth=1 https://git.zv.io/toolchains/musl-cross-make.git musl-cross
+      - name: Copy our config
+        run: cp config.mak.armv7l config.mak
+      - name: Build
+        run: |
+             cd musl-cross
+             make
+      - name: List output
+        run: ls -al ./output

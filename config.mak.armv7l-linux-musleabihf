@@ -33,8 +33,8 @@ OUTPUT = ./armv7l-linux-musleabihf
 # Setting a blank version for linux will suppress installation of kernel
 # headers, which are not needed unless compiling programs that use them.
 
-# BINUTILS_VER = 2.25.1
-# GCC_VER = 5.2.0
+BINUTILS_VER = 2.39
+GCC_VER = 12.2.0
 MUSL_VER = 1.2.4
 # GMP_VER =
 # MPC_VER =

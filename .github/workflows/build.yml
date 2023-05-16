@@ -26,6 +26,6 @@ jobs:
       - name: Build
         run: |
              cd musl-cross
-             make
+             make -j$(nproc)
       - name: List output
         run: ls -al ./output

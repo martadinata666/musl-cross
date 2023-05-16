@@ -28,15 +28,9 @@ jobs:
       #- name: Copy our config
       #  run: cp config.mak.${{ matrix.target }} musl-cross/config.mak
       - name: Build
-        env:
-          BINUTILS_VER: 2.39
-          GCC_VER: 12.2.0
-          MUSL_VER: 1.2.4
-          TARGET: ${{ matrix.target }}
-          OUTPUT: ${{ matrix.target }}
         run: |
              cd musl-cross
-             make -j$(nproc)
+             make -j$(nproc) BINUTILS_VER=2.39 GCC_VER=12.2.0 MUSL_VER=1.2.4 OUTPUT=${{ matrix.target }} TARGET=${{ matrix.target }}
              make install
              ls -al ./${{ matrix.target }}
       - name: Compress action step

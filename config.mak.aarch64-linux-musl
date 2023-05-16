@@ -20,7 +20,7 @@ TARGET = aarch64-linux-musl
 # To install directly to a specific location, set it here. Multiple targets
 # can safely be installed in the same location. Some examples:
 
-OUTPUT = ./aarch64-linux-musl
+# OUTPUT = ./aarch64-linux-musl
 # OUTPUT = /usr/local
 
 # By default, latest supported release versions of musl and the toolchain

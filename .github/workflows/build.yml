@@ -27,5 +27,6 @@ jobs:
         run: |
              cd musl-cross
              make -j$(nproc)
+             make install
       - name: List output
         run: ls -al ./output

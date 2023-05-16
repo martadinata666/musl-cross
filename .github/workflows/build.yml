@@ -33,18 +33,18 @@ jobs:
           GCC_VER: 12.2.0
           MUSL_VER: 1.2.4
           TARGET: ${{ matrix.target }}
+          OUTPUT: ${{ matrix.target }}
         run: |
              cd musl-cross
              make -j$(nproc)
              make install
-      - name: List output
-        run: ls -al ./output
+             ls -al ./${{ matrix.target }}
       - name: Compress action step
         uses: a7ul/tar-action@v1.1.0
         id: compress
         with:
           command: c
-          cwd: ./output
+          cwd: ./musl-cross/${{ matrix.target }}
           files: |
             ./*
           outPath: ${{ matrix.target }}.tar.gz
@@ -52,4 +52,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: ${{ matrix.target }}-cross.tar.gz
-          path: ${{ matrix.target}}/${{ matrix.target }}-cross.tar.gz
+          path: ${{ matrix.target }}-cross.tar.gz

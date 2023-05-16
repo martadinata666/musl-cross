@@ -16,13 +16,16 @@ on:
 jobs:
   Build:
     runs-on: ubuntu-latest
+    strategy:
+       matrix:
+         target: [armv7l,aarch64,x86_64]
     steps:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Clone upstream
         run: git clone --depth=1 https://git.zv.io/toolchains/musl-cross-make.git musl-cross
       - name: Copy our config
-        run: cp config.mak.armv7l musl-cross/config.mak
+        run: cp config.mak.${{ matrix.target }} musl-cross/config.mak
       - name: Build
         run: |
              cd musl-cross
@@ -30,3 +33,17 @@ jobs:
              make install
       - name: List output
         run: ls -al ./output
+      - name: Compress action step
+        uses: a7ul/tar-action@v1.1.0
+        id: compress
+        with:
+          command: c
+          cwd: ./output
+          files: |
+            ./*
+          outPath: ${{ matrix.target }}.tar.gz
+      - name: Upload ${{ matrix.target }} musl-cross artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ matrix.target }}-musl-cross
+          path: ${{ matrix.target }}-musl-cross

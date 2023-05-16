@@ -22,7 +22,7 @@ jobs:
       - name: Clone upstream
         run: git clone --depth=1 https://git.zv.io/toolchains/musl-cross-make.git musl-cross
       - name: Copy our config
-        run: cp config.mak.armv7l config.mak
+        run: cp config.mak.armv7l musl-cross/config.mak
       - name: Build
         run: |
              cd musl-cross

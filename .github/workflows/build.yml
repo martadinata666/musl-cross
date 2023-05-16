@@ -41,7 +41,8 @@ jobs:
         run: |
              sudo apt update
              sudo apt install -y tar
-             tar -czf ${{ matrix.target }}.tar.gz musl-cross/output
+             tar -cvzf ${{ matrix.target }}-cross.tar.gz musl-cross/output
+             ls -al
              
       - name: Upload ${{ matrix.target }}-cross artifacts
         uses: actions/upload-artifact@v3

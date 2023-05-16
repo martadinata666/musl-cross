@@ -17,6 +17,7 @@ jobs:
   Build:
     runs-on: ubuntu-latest
     strategy:
+       fail-fast: false
        matrix:
          target: [armv7l-linux-musleabihf,aarch64-linux-musl,x86_64-linux-musl]
     steps:
@@ -32,23 +33,22 @@ jobs:
           GCC_VER: 12.2.0
           MUSL_VER: 1.2.4
           TARGET: ${{ matrix.target }}
-          OUTPUT: ${{ matrix.target }}
         run: |
              cd musl-cross
              make -j$(nproc)
              make install
       - name: List output
-        run: ls -al ./${{ matrix.target }}
+        run: ls -al ./output
       - name: Compress action step
         uses: a7ul/tar-action@v1.1.0
         id: compress
         with:
           command: c
-          cwd: ./${{ matrix.target }}
+          cwd: ./output
           files: |
             ./*
           outPath: ${{ matrix.target }}.tar.gz
-      - name: Upload ${{ matrix.target }} musl-cross artifacts
+      - name: Upload ${{ matrix.target }}-cross artifacts
         uses: actions/upload-artifact@v3
         with:
           name: ${{ matrix.target }}-cross.tar.gz

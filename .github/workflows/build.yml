@@ -19,32 +19,29 @@ jobs:
     strategy:
        fail-fast: false
        matrix:
-         #target: [armv7l-linux-musleabihf,aarch64-linux-musl,x86_64-linux-musl]
-         target: [armv7l-linux-musleabihf]
+         target: [armv7l-linux-musleabihf,aarch64-linux-musl,x86_64-linux-musl]
+         #target: [armv7l-linux-musleabihf]
     steps:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Clone upstream
         run: git clone --depth=1 https://git.zv.io/toolchains/musl-cross-make.git musl-cross
-      #- name: Copy our config
-      #  run: cp config.mak.${{ matrix.target }} musl-cross/config.mak
+      - name: Copy our config
+        run: cp config.mak.${{ matrix.target }} musl-cross/config.mak
       - name: Build
         run: |
-             ls -al ./
              cd musl-cross
-             make -j$(nproc) BINUTILS_VER=2.39 GCC_VER=12.2.0 MUSL_VER=1.2.4 OUTPUT=${{ matrix.target }} TARGET=${{ matrix.target }}
-             make install
-             ls -al ./
-             ls -al ../
-      - name: Compress action step
-        uses: a7ul/tar-action@v1.1.0
-        id: compress
-        with:
-          command: c
-          cwd: ./musl-cross/${{ matrix.target }}
-          files: |
-            ./*
-          outPath: ${{ matrix.target }}.tar.gz
+             make -j$(nproc)
+      - name: Listing
+        run: |
+             ls -al
+             ls -al musl-cross
+      - name: Compress ${{ matrix.target }}-cross
+        run: |
+             sudo apt update
+             sudo apt install -y tar
+             tar -czf ${{ matrix.target }}.tar.gz musl-cross/${{ matrix.target }}
+             
       - name: Upload ${{ matrix.target }}-cross artifacts
         uses: actions/upload-artifact@v3
         with:

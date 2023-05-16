@@ -18,32 +18,38 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
        matrix:
-         target: [armv7l,aarch64,x86_64]
+         target: [armv7l-linux-musleabihf,aarch64-linux-musl,x86_64-linux-musl]
     steps:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Clone upstream
         run: git clone --depth=1 https://git.zv.io/toolchains/musl-cross-make.git musl-cross
-      - name: Copy our config
-        run: cp config.mak.${{ matrix.target }} musl-cross/config.mak
+      #- name: Copy our config
+      #  run: cp config.mak.${{ matrix.target }} musl-cross/config.mak
       - name: Build
+        env:
+          BINUTILS_VER: 2.39
+          GCC_VER: 12.2.0
+          MUSL_VER: 1.2.4
+          TARGET: ${{ matrix.target }}
+          OUTPUT: ${{ matrix.target }}
         run: |
              cd musl-cross
              make -j$(nproc)
              make install
       - name: List output
-        run: ls -al ./output
+        run: ls -al ./${{ matrix.target }}
       - name: Compress action step
         uses: a7ul/tar-action@v1.1.0
         id: compress
         with:
           command: c
-          cwd: ./output
+          cwd: ./${{ matrix.target }}
           files: |
             ./*
           outPath: ${{ matrix.target }}.tar.gz
       - name: Upload ${{ matrix.target }} musl-cross artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ matrix.target }}-musl-cross
-          path: ${{ matrix.target }}-musl-cross
+          name: ${{ matrix.target }}-cross.tar.gz
+          path: ${{ matrix.target}}/${{ matrix.target }}-cross.tar.gz

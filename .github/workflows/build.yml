@@ -19,7 +19,7 @@ jobs:
     strategy:
        fail-fast: false
        matrix:
-         target: [armv7l-linux-musleabihf,aarch64-linux-musl,x86_64-linux-musl]
+         target: [armv7l-linux-musleabihf-musl11,armv7l-linux-musleabihf,aarch64-linux-musl,x86_64-linux-musl]
          #target: [armv7l-linux-musleabihf]
     steps:
       - name: Checkout
@@ -33,19 +33,46 @@ jobs:
              cd musl-cross
              make -j$(nproc)
              make install
-      - name: Listing
+      - name: Listing and rename
         run: |
              ls -al
              ls -al musl-cross
+             mv musl-cross/output musl-cross/${{ matrix.target }}
       - name: Compress ${{ matrix.target }}-cross
         run: |
-             sudo apt update
-             sudo apt install -y tar
-             tar -cvzf ${{ matrix.target }}-cross.tar.gz musl-cross/output
+             cd musl-cross
+             tar -cvzf ${{ matrix.target }}-cross.tar.gz ${{ matrix.target }}
              ls -al
-             
+
       - name: Upload ${{ matrix.target }}-cross artifacts
         uses: actions/upload-artifact@v3
         with:
           name: ${{ matrix.target }}-cross.tar.gz
-          path: ${{ matrix.target }}-cross.tar.gz
+          path: musl-cross/${{ matrix.target }}-cross.tar.gz
+
+  Create-release-artifacts:
+     needs: [Build]
+     name: Create release artifacts
+     strategy:
+       fail-fast: false
+       matrix:
+         target: [armv7l-linux-musleabihf-musl11,armv7l-linux-musleabihf,aarch64-linux-musl,x86_64-linux-musl]
+         #target: [armv7l-linux-musleabihf]
+     if: github.event_name == 'release'
+     runs-on: ubuntu-latest
+     permissions:
+       contents: write
+     steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v3
+          name: ${{ matrix.target  }}.tar.gz
+
+      - name: Upload compressed release
+        uses: ncipollo/release-action@v1
+        id: create_release
+        with:
+          allowUpdates: true
+          artifacts: ${{ matrix.target  }}.tar.gz
+        env:
+         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+

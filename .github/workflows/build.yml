@@ -65,14 +65,15 @@ jobs:
      steps:
       - name: Download artifact
         uses: actions/download-artifact@v3
-          name: ${{ matrix.target  }}.tar.gz
+        with:
+          name: ${{ matrix.target }}-cross.tar.gz
 
       - name: Upload compressed release
         uses: ncipollo/release-action@v1
         id: create_release
         with:
           allowUpdates: true
-          artifacts: ${{ matrix.target  }}.tar.gz
+          artifacts: ${{ matrix.target }}-cross.tar.gz
         env:
          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

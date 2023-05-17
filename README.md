@@ -6,9 +6,9 @@ Due https://musl.cc not updating binaries over 2 years, but upstream git updatin
 
 ## Local build
 * Clone upstream git 
-```
-$ git clone --depth=1 https://git.zv.io/toolchains/musl-cross-make musl-cross
-```
+  ```
+  $ git clone --depth=1 https://git.zv.io/toolchains/musl-cross-make musl-cross
+  ```
 * Copy config.mak.yourmodification to `musl-cross/config.mak`, [config.mak reference](https://git.zv.io/toolchains/musl-cross-make/-/blob/master/config.mak.dist)
 * `cd musl-cross`
 * `make -j$(nproc)`

@@ -2,18 +2,14 @@ name: Build MUSL cross
 
 on:
   push:
+    paths:
+      - '**.mak.**'
+      - '.github/workflows/build.yml'
     branches: 
       - "*"
     tags:
       - "v*"
   workflow_dispatch:
-    inputs:
-      logLevel:
-        description: 'Log level'
-        required: true
-        default: 'warning'
-      tags:
-        description: 'Manual run'
 
 jobs:
   Build:

@@ -5,6 +5,9 @@ on:
     paths:
       - '**.mak.**'
       - '.github/workflows/build.yml'
+  release:
+    types:
+      - 'published'
     branches: 
       - "*"
     tags:

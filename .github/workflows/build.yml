@@ -37,11 +37,11 @@ jobs:
         run: |
              ls -al
              ls -al musl-cross
-             mv musl-cross/output musl-cross/${{ matrix.target }}
+             mv musl-cross/output musl-cross/${{ matrix.target }}-cross
       - name: Compress ${{ matrix.target }}-cross
         run: |
              cd musl-cross
-             tar -cvzf ${{ matrix.target }}-cross.tar.gz ${{ matrix.target }}
+             tar -cvzf ${{ matrix.target }}-cross.tar.gz ${{ matrix.target }}-cross
              ls -al
 
       - name: Upload ${{ matrix.target }}-cross artifacts
